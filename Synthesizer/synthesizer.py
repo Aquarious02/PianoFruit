@@ -16,6 +16,17 @@ class Note:
         self.pressed = False,
         self.duration = 0
 
+    def press(self):
+        if self.pressed is False:
+            self.pressed = True
+            self.duration = pygame.midi.time()
+        else:
+            self.pressed = False
+            self.duration = pygame.midi.time() - self.duration
+
+    def __repr__(self):
+        return f'Note "{self.name}". Pressing by key "{self.key}". Has midiNumber: {self.midiNumber}'
+
 
 class Notes:
     def __init__(self, *notes):
@@ -28,18 +39,21 @@ class Notes:
         # self._notes_names[key_pressed].pressed = True
         # self._notes_names[key_pressed].duration = pygame.midi.time()
 
-        self[note_name].pressed = True
-        self[note_name].duration = pygame.midi.time()
+        self[note_name].press()
 
     def key_up(self, note_name: str):
         """Обработчик отжатий клавиш.
         :param note_name: Нота
         """
-        # self._notes_names[key_pressed].pressed = True
-        # self._notes_names[key_pressed].duration = pygame.midi.time()
 
-        self[note_name].pressed = False
-        self[note_name].duration = pygame.midi.time() - self[note_name].duration
+        self[note_name].press()
+
+    def reset(self):
+        """
+        Resets all notes
+        """
+        for note in self:
+            note.duration = 0
 
     def __getitem__(self, note_name: str) -> Note:
         """
@@ -134,8 +148,7 @@ class Synthesizer:
                 )
         self._player.write(data)
 
-        for note in self.notes:
-            note.duration = 0
+        self.notes.reset()
             # key['pressed'] = False
 
 
