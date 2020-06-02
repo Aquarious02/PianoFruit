@@ -20,11 +20,14 @@ class _Game:
         self.running = False
 
     def start(self):
+        """
+        Arduino threshold setting and Loop starting
+        """
         self.running = True
 
         if self.is_COM_enabled:
             # Подготовка COM порта
-            self._ser = serial.Serial(port='COM17', baudrate=9600)
+            self._ser = serial.Serial(port='COM17', baudrate=9600)  # fixme
 
             # Считывание установленного порога
             # self.threshold = int(
@@ -39,6 +42,9 @@ class _Game:
         self._loop()
 
     def _loop(self):
+        """
+        Main cycle
+        """
         while self.running:
             self._clock.tick(30)
             for event in pygame.event.get():
