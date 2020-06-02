@@ -35,6 +35,16 @@ class MyTestCase(unittest.TestCase):
             self.test_notes.key_up('C')  # Отжатие
             self.assertFalse(self.test_notes['C'].pressed)
 
+    def test_iteration(self):
+        """
+        Iteration test
+        :return:
+        """
+        names = ''
+        for note in self.test_notes:
+            names += note.name
+        self.assertEqual(names, 'CDEFGAB')
+
 
 if __name__ == '__main__':
     unittest.main()
