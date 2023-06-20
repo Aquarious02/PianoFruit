@@ -2,6 +2,8 @@
 import pygame
 import pygame.freetype
 
+from synthesizer import Notes
+
 
 class GUI:
     """Графичсекий инетерфейс пользователя."""
@@ -162,7 +164,7 @@ class GUI:
 
         return pxarray.make_surface()
 
-    def update(self, key_state):
+    def update(self, notes: Notes):
         """Обновление GUI."""
         self._screen.fill((255, 255, 255))
         self._screen.blit(
@@ -170,16 +172,16 @@ class GUI:
             self._keyboard_image['pos']
         )
 
-        for (note, note_data) in key_state.items():
-            if note_data['pressed']:
+        for note in notes:
+            if note.pressed:
                 self._screen.blit(
-                    self._key_images[note]['key_down'],
-                    self._key_images[note]['pos']
+                    self._key_images[note.name]['key_down'],
+                    self._key_images[note.name]['pos']
                 )
             else:
                 self._screen.blit(
-                    self._key_images[note]['key_up'],
-                    self._key_images[note]['pos']
+                    self._key_images[note.name]['key_up'],
+                    self._key_images[note.name]['pos']
                 )
 
         pygame.display.flip()

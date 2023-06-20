@@ -59,14 +59,12 @@ class _Game:
 
                     # Обработка нажатий и отпускания.
                     for note in self._synth.notes:
-                        if (event.key ==
-                                self._synth.notes[note]['key_code']):
+                        if event.key == self._synth.notes[note].key_code:
                             self._synth.handle_key_down(note)
 
                 if event.type == pygame.KEYUP:
                     for note in self._synth.notes:
-                        if (event.key ==
-                                self._synth.notes[note]['key_code']):
+                        if event.key == self._synth.notes[note].key_code:
                             self._synth.handle_key_up(note)
 
             if self.running:
@@ -103,8 +101,7 @@ class _Game:
         pygame.quit()
 
 
-game = _Game()
-
-game.start()
-
-game.quit()
+if __name__ == '__main__':
+    game = _Game()
+    game.start()
+    game.quit()

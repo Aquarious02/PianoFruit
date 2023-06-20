@@ -1,7 +1,8 @@
 """Синтезатор."""
-
-# Импорты сторонних библиотек
 import pygame.midi
+
+
+pygame.midi.init()
 
 
 class Note:
@@ -11,9 +12,9 @@ class Note:
     def __init__(self, *, name: str, key: str, midi_number: int):
         self.name = name
         self.key = key.lower()
-        self.key_code = ord(key),
+        self.key_code = ord(key)
         self.midiNumber = midi_number
-        self.pressed = False,
+        self.pressed = False
         self.duration = 0
 
     def press(self):
@@ -32,19 +33,26 @@ class Notes:
     def __init__(self, *notes):
         self._notes_names = {note.name: note for note in notes}  # Use note.key if using note's key instead note's name
 
-    def key_down(self, note_name: str):
+    def _any2str(self, note: str | Note) -> str:
+        if isinstance(note, Note):
+            note = note.name
+        return note
+
+    def key_down(self, note_name: str | Note):
         """Обработчик нажатий клавиш.
         :param note_name: Нота
         """
         # self._notes_names[key_pressed].pressed = True
         # self._notes_names[key_pressed].duration = pygame.midi.time()
+        note_name = self._any2str(note_name)
 
         self[note_name].press()
 
-    def key_up(self, note_name: str):
+    def key_up(self, note_name: str | Note):
         """Обработчик отжатий клавиш.
         :param note_name: Нота
         """
+        note_name = self._any2str(note_name)
 
         self[note_name].press()
 
@@ -55,13 +63,13 @@ class Notes:
         for note in self:
             note.duration = 0
 
-    def __getitem__(self, note_name: str) -> Note:
+    def __getitem__(self, note_name: str | Note) -> Note:
         """
         Return note based on name. Use indices (e.g Notes['A'])
         :param note_name:
         :return: Note
         """
-        # note_name = note_name.lower()
+        note_name = self._any2str(note_name)
         if self._notes_names.get(note_name, False):
             return self._notes_names[note_name]
         else:
@@ -122,7 +130,7 @@ class Synthesizer:
         """
         self.notes.key_down(note)
 
-    def handle_key_up(self, note):
+    def handle_key_up(self, note: str):
         """Обработчик отжатий клавиш.
 
         :param note: Нота
@@ -150,9 +158,3 @@ class Synthesizer:
 
         self.notes.reset()
             # key['pressed'] = False
-
-
-if __name__ == '__main__':
-    piano = Synthesizer()
-    piano.start()
-    piano.quit()
